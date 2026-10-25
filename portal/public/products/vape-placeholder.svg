@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="Ilustración de vape">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#191b30"/>
+      <stop offset=".55" stop-color="#242744"/>
+      <stop offset="1" stop-color="#5d3fcc"/>
+    </linearGradient>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#80ffa6"/>
+      <stop offset="1" stop-color="#009468"/>
+    </linearGradient>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="22" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="800" height="800" fill="url(#bg)"/>
+  <circle cx="635" cy="160" r="190" fill="#80ffa6" opacity=".08"/>
+  <circle cx="140" cy="650" r="230" fill="#717ff5" opacity=".12"/>
+  <g transform="translate(400 400) rotate(-24)">
+    <rect x="-74" y="-240" width="148" height="390" rx="74" fill="#0f1122" stroke="#80ffa6" stroke-opacity=".3" stroke-width="3"/>
+    <rect x="-54" y="-205" width="108" height="300" rx="54" fill="url(#body)" opacity=".9"/>
+    <rect x="-30" y="-292" width="60" height="70" rx="18" fill="#fdf0ff" opacity=".86"/>
+    <rect x="-42" y="150" width="84" height="82" rx="26" fill="#0f1122" stroke="#80ffa6" stroke-opacity=".45" stroke-width="2"/>
+    <path d="M-24 190h48" stroke="#80ffa6" stroke-width="6" stroke-linecap="round"/>
+    <path d="M-12 212h24" stroke="#80ffa6" stroke-width="4" stroke-linecap="round" opacity=".6"/>
+    <circle cx="0" cy="-124" r="16" fill="#0f1122" opacity=".55"/>
+    <circle cx="0" cy="-124" r="7" fill="#fdf0ff" filter="url(#glow)"/>
+  </g>
+  <g fill="none" stroke="#80ffa6" stroke-linecap="round" opacity=".55">
+    <path d="M188 205c45-35 75-35 120 0s75 35 120 0" stroke-width="4"/>
+    <path d="M188 238c45-35 75-35 120 0s75 35 120 0" stroke-width="2"/>
+  </g>
+</svg>

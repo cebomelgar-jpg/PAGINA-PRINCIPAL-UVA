@@ -1,0 +1,305 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #191b30;
+  --color-deep: #0f1122;
+  --color-ink-soft: #242744;
+  --color-purple: #5d3fcc;
+  --color-purple-light: #717ff5;
+  --color-green: #009468;
+  --color-green-text: #007a55;
+  --color-mint: #80ffa6;
+  --color-paper: #fdf0ff;
+  --color-paper-soft: #f8eafd;
+  --color-muted: #65677b;
+  --color-line: #191b301a;
+  --color-rose: #d93a6a;
+
+  --shadow-soft: 0 24px 80px -40px rgba(25, 27, 48, 0.55);
+  --shadow-card: 0 18px 50px -30px rgba(25, 27, 48, 0.35);
+  --shadow-glow: 0 0 0 1px rgba(128, 255, 166, 0.18),
+    0 24px 70px -30px rgba(128, 255, 166, 0.55);
+
+  --animate-fade-up: fade-up 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-fade-in: fade-in 0.4s ease-out both;
+  --animate-cart-bump: cart-bump 0.35s ease-out;
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-pulse-soft: pulse-soft 2.4s ease-in-out infinite;
+}
+
+@theme inline {
+  --font-sans: var(--font-space-grotesk);
+  --font-display: var(--font-righteous);
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes cart-bump {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.28);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-paper font-sans text-ink antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display;
+    text-wrap: balance;
+  }
+
+  ::selection {
+    background: var(--color-mint);
+    color: var(--color-deep);
+  }
+
+  :focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--color-mint) 80%, white);
+    outline-offset: 3px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-ink) 18%, transparent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition duration-200 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition duration-200 disabled:cursor-not-allowed disabled:opacity-50 bg-ink text-paper shadow-card hover:-translate-y-0.5 hover:bg-deep hover:shadow-soft;
+  }
+
+  .btn-mint {
+    @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition duration-200 disabled:cursor-not-allowed disabled:opacity-50 bg-mint text-deep shadow-glow hover:-translate-y-0.5 hover:bg-mint/90;
+  }
+
+  .btn-outline {
+    @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition duration-200 disabled:cursor-not-allowed disabled:opacity-50 border border-ink/15 bg-white/70 text-ink hover:-translate-y-0.5 hover:border-ink/30 hover:bg-white;
+  }
+
+  .btn-ghost {
+    @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition duration-200 disabled:cursor-not-allowed disabled:opacity-50 text-ink hover:bg-ink/5;
+  }
+
+  .btn-danger {
+    @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition duration-200 disabled:cursor-not-allowed disabled:opacity-50 bg-rose text-white hover:-translate-y-0.5 hover:bg-rose/90;
+  }
+
+  .btn-sm {
+    @apply px-3.5 py-2 text-xs;
+  }
+
+  .input {
+    @apply w-full rounded-2xl border border-ink/15 bg-white/85 px-4 py-3 text-sm text-ink shadow-sm outline-none transition placeholder:text-muted/55 focus:border-green focus:ring-4 focus:ring-mint/35 disabled:cursor-not-allowed disabled:bg-ink/5;
+  }
+
+  .textarea {
+    @apply w-full rounded-2xl border border-ink/15 bg-white/85 px-4 py-3 text-sm text-ink shadow-sm outline-none transition placeholder:text-muted/55 focus:border-green focus:ring-4 focus:ring-mint/35 disabled:cursor-not-allowed disabled:bg-ink/5 min-h-28 resize-y;
+  }
+
+  .select {
+    @apply w-full rounded-2xl border border-ink/15 bg-white/85 px-4 py-3 text-sm text-ink shadow-sm outline-none transition placeholder:text-muted/55 focus:border-green focus:ring-4 focus:ring-mint/35 disabled:cursor-not-allowed disabled:bg-ink/5 appearance-none pr-10;
+    background-image: linear-gradient(45deg, transparent 50%, var(--color-muted) 50%),
+      linear-gradient(135deg, var(--color-muted) 50%, transparent 50%);
+    background-position:
+      calc(100% - 18px) calc(50% - 2px),
+      calc(100% - 13px) calc(50% - 2px);
+    background-size:
+      5px 5px,
+      5px 5px;
+    background-repeat: no-repeat;
+  }
+
+  .label {
+    @apply mb-2 block text-[11px] font-semibold uppercase tracking-[0.18em] text-muted;
+  }
+
+  .field-error {
+    @apply mt-1.5 text-xs font-medium text-rose;
+  }
+
+  .card {
+    @apply rounded-3xl border border-ink/10 bg-white/80 shadow-card backdrop-blur-sm;
+  }
+
+  .card-dark {
+    @apply rounded-3xl border border-white/10 bg-ink text-paper shadow-soft;
+  }
+
+  .eyebrow {
+    @apply text-[11px] font-semibold uppercase tracking-[0.28em] text-green-text;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-semibold;
+  }
+
+  .chip {
+    @apply inline-flex items-center rounded-full border border-ink/10 bg-white/70 px-2.5 py-1 text-[11px] font-medium text-muted;
+  }
+
+  .link-underline {
+    @apply text-green-text underline decoration-mint decoration-2 underline-offset-4 transition hover:text-green;
+  }
+
+  .portal-canvas {
+    background:
+      radial-gradient(circle at 8% 0%, rgba(128, 255, 166, 0.16), transparent 28rem),
+      radial-gradient(circle at 92% 8%, rgba(113, 127, 245, 0.18), transparent 30rem),
+      linear-gradient(180deg, #fdf0ff 0%, #f8eafd 55%, #fdf0ff 100%);
+  }
+
+  .grain {
+    background-image: url("/brand/pattern.webp");
+    background-size: 520px auto;
+    background-position: center;
+    opacity: 0.055;
+    mix-blend-mode: multiply;
+  }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .table-wrap {
+    @apply overflow-x-auto rounded-3xl border border-ink/10 bg-white/80 shadow-card;
+  }
+
+  .data-table {
+    @apply w-full min-w-[900px] border-collapse text-left text-sm;
+  }
+
+  .data-table thead {
+    @apply bg-ink/[0.04] text-[10px] uppercase tracking-[0.16em] text-muted;
+  }
+
+  .data-table th {
+    @apply px-4 py-3 font-semibold;
+  }
+
+  .data-table td {
+    @apply border-t border-ink/8 px-4 py-3 align-top;
+  }
+
+  .data-table tbody tr {
+    @apply transition hover:bg-mint/10;
+  }
+
+  .status-dot {
+    @apply inline-block size-2 rounded-full bg-mint;
+    box-shadow: 0 0 0 4px rgba(128, 255, 166, 0.2);
+  }
+
+  .no-print {
+    @apply print:hidden;
+  }
+}
+
+@media print {
+  body {
+    background: white !important;
+    color: #111 !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .card,
+  .table-wrap {
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+    background: white !important;
+  }
+
+  .data-table {
+    min-width: 0 !important;
+    font-size: 10px !important;
+  }
+}

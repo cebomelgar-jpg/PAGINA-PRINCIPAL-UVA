@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="Ilustración botánica">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f1122"/>
+      <stop offset=".6" stop-color="#242744"/>
+      <stop offset="1" stop-color="#5d3fcc"/>
+    </linearGradient>
+    <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#80ffa6"/>
+      <stop offset="1" stop-color="#009468"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="800" fill="url(#bg)"/>
+  <circle cx="650" cy="120" r="220" fill="#80ffa6" opacity=".08"/>
+  <circle cx="110" cy="700" r="260" fill="#717ff5" opacity=".14"/>
+  <g transform="translate(400 410)">
+    <path d="M0 190C-20 80 40-30 170-120c-8 112-50 230-170 310Z" fill="url(#leaf)" opacity=".9"/>
+    <path d="M0 190C20 80-40-30-170-120c8 112 50 230 170 310Z" fill="url(#leaf)" opacity=".55"/>
+    <path d="M0 190C-5 70 5-40 20-170" stroke="#0f1122" stroke-width="8" stroke-linecap="round" opacity=".55"/>
+    <path d="M5 90c40-30 75-45 112-58M-5 32c-35-30-66-45-100-60M12 140c35-15 62-20 90-24" stroke="#0f1122" stroke-width="5" stroke-linecap="round" opacity=".35"/>
+  </g>
+</svg>
