@@ -135,12 +135,12 @@ Si ya tenés datos reales, revisá `202610250006_seed_catalog.sql` antes de ejec
 
 En *Authentication → URL Configuration*:
 
-- **Site URL**: `http://localhost:3000` en desarrollo o `https://portal.unviajeastral.com` en producción.
+- **Site URL**: `http://localhost:3000` en desarrollo o `https://uv-aoficial.vercel.app` en producción.
 - **Redirect URLs**:
   - `http://localhost:3000/auth/callback`
   - `http://localhost:3000/auth/confirm`
-  - `https://portal.unviajeastral.com/auth/callback`
-  - `https://portal.unviajeastral.com/auth/confirm`
+  - `https://uv-aoficial.vercel.app/auth/callback`
+  - `https://uv-aoficial.vercel.app/auth/confirm`
 
 En *Authentication → Providers → Email*:
 
