@@ -14,14 +14,20 @@ export async function GET(request: Request) {
   const next = safeNext(searchParams.get("next"));
 
   if (tokenHash && type) {
-    const supabase = await createClient();
-    const { error } = await supabase.auth.verifyOtp({
-      type,
-      token_hash: tokenHash,
-    });
+    try {
+      const supabase = await createClient();
+      const { error } = await supabase.auth.verifyOtp({
+        type,
+        token_hash: tokenHash,
+      });
 
-    if (!error) {
-      return NextResponse.redirect(new URL(next, origin));
+      if (!error) {
+        return NextResponse.redirect(new URL(next, origin));
+      }
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Error desconocido";
+      console.error(`[auth/confirm] No se pudo verificar el enlace: ${message}`);
     }
   }
 

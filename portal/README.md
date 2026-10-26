@@ -17,7 +17,7 @@ Portal privado para pacientes registrados de **Un Viaje Astral**. Conserva la id
 
 ## Puesta en marcha
 
-Requisitos: Node.js 20 o superior, npm y un proyecto de Supabase.
+Requisitos: Node.js 20.9 o superior, npm y un proyecto de Supabase.
 
 ```bash
 cd portal
@@ -58,6 +58,8 @@ El portal queda disponible en [http://localhost:3000](http://localhost:3000).
 
 Las variables se documentan en `.env.example`. Nunca subas `.env.local` al repositorio.
 
+> Las variables `NEXT_PUBLIC_*` se incorporan al bundle durante el build. En Vercel deben estar cargadas en **Production** y **Preview** antes de compilar; si las cambiás, hacé un nuevo deploy. Las claves secretas (`SUPABASE_SERVICE_ROLE_KEY`, `ADMIN_*`) son solo para scripts locales y no deben configurarse en el runtime de Vercel.
+
 ### Públicas (seguras para el navegador)
 
 | Variable | Uso |
@@ -75,12 +77,12 @@ Las variables se documentan en `.env.example`. Nunca subas `.env.local` al repos
 
 | Variable | Uso |
 | --- | --- |
-| `SUPABASE_SERVICE_ROLE_KEY` | Solo para `scripts/bootstrap-admin.mjs`; nunca en el navegador |
+| `SUPABASE_SERVICE_ROLE_KEY` | Solo para `scripts/bootstrap-admin.mjs` y `scripts/verify-supabase.mjs`; nunca en el navegador |
 | `ADMIN_EMAIL` | Email del administrador inicial |
 | `ADMIN_PASSWORD` | Contraseña inicial, mínimo 8 caracteres |
 | `ADMIN_FULL_NAME` | Nombre visible del administrador |
 
-> `SUPABASE_SERVICE_ROLE_KEY` omite RLS. No debe llevar el prefijo `NEXT_PUBLIC_`, no debe exponerse en el cliente ni en el repositorio. En producción, el portal no necesita esta clave; solo se usa localmente para crear el primer administrador.
+> `SUPABASE_SERVICE_ROLE_KEY` omite RLS. No debe llevar el prefijo `NEXT_PUBLIC_`, no debe exponerse en el cliente ni en el repositorio. En producción, el portal no necesita esta clave; solo se usa localmente para crear el primer administrador y verificar la base.
 
 ### Verificar la conexión
 
@@ -217,10 +219,11 @@ El detalle del pedido conserva nombre, precio y categoría del producto aunque l
 - **Administración protegida** por el middleware, `requireAdmin()` y políticas `is_admin()` en la base.
 - **Precios y stock del servidor**: el checkout nunca confía en los totales del cliente. `create_order` valida producto activo, stock, precio y cantidades, y recalcula el total.
 - **RPCs `security definer`** con `search_path` fijo y comprobaciones explícitas de usuario y rol.
-- **Sesiones SSR** con cookies de Supabase y refresh en middleware.
+- **Sesiones SSR** con cookies de Supabase y refresh en middleware. El middleware captura errores de configuración, red, cookies y consultas de rol en Edge Runtime; si Supabase no está disponible, las rutas privadas derivan a `/login?error=unavailable` en lugar de devolver un HTTP 500. Las respuestas que renuevan cookies incluyen `Cache-Control: private, no-store`.
 - **Storage**: bucket público de solo lectura para imágenes, con escritura exclusiva de administradores.
 - **Cabeceras**: CSP, `X-Frame-Options`, `nosniff`, HSTS en producción y `Referrer-Policy`.
 - **No indexable**: metadata `noindex`, `robots.txt` con `Disallow: /` y cabecera `X-Robots-Tag`.
+- **Dependencias**: `npm audit` sin vulnerabilidades conocidas. `package.json` incluye un override de PostCSS `^8.5.31` para corregir la versión transitiva de Next 15; revisarlo al actualizar Next.
 - **Datos sensibles**: las notas terapéuticas son información personal. Limitá el acceso de administradores, no exportes datos innecesariamente y rotá claves si se comprometen.
 
 ### Checklist antes de producción
@@ -242,11 +245,21 @@ El detalle del pedido conserva nombre, precio y categoría del producto aunque l
 
 1. Importá el proyecto en Vercel.
 2. Configurá **Root Directory** como `portal` si desplegás desde este repositorio.
-3. Cargá las variables públicas y `NEXT_PUBLIC_PORTAL_URL` con el dominio final.
+3. Cargá las variables públicas y `NEXT_PUBLIC_PORTAL_URL` con el dominio final en **Production** y **Preview**.
 4. Build command: `npm run build`. Output: Next.js por defecto.
 5. Agregá el dominio o subdominio y actualizá la configuración de Auth en Supabase.
 
+No hace falta un `vercel.json`: Vercel detecta Next.js automáticamente en el directorio `portal`. El proyecto declara Node.js `>=20.9.0` en `package.json`; se recomienda Node 22 en Vercel.
+
 No es necesario desplegar `SUPABASE_SERVICE_ROLE_KEY` ni las variables `ADMIN_*` en Vercel. Son solo para el bootstrap local.
+
+Antes de publicar, verificá el build local:
+
+```bash
+npm run typecheck
+npm run lint
+npm run build
+```
 
 ### Servidor propio
 

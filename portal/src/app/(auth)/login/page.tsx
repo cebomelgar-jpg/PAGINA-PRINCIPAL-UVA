@@ -15,7 +15,14 @@ const errorMessages: Record<string, string> = {
   profile:
     "Tu cuenta existe pero no encontramos tu perfil. Escribinos para resolverlo.",
   forbidden: "No tenés permisos para acceder a esa sección.",
+  unavailable:
+    "No pudimos verificar tu sesión en este momento. Esperá unos segundos y volvé a intentar. Si el problema continúa, escribinos por WhatsApp.",
 };
+
+function getErrorMessage(error: string | undefined) {
+  if (!error || !Object.hasOwn(errorMessages, error)) return null;
+  return errorMessages[error];
+}
 
 export default async function LoginPage({
   searchParams,
@@ -23,7 +30,7 @@ export default async function LoginPage({
   searchParams: Promise<{ next?: string; error?: string }>;
 }) {
   const params = await searchParams;
-  const errorMessage = params.error ? errorMessages[params.error] : null;
+  const errorMessage = getErrorMessage(params.error);
 
   return (
     <div className="card p-6 sm:p-8">
@@ -37,7 +44,10 @@ export default async function LoginPage({
       </p>
 
       {errorMessage ? (
-        <div className="mt-5 flex gap-3 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-xs leading-relaxed text-rose-800">
+        <div
+          role="alert"
+          className="mt-5 flex gap-3 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-xs leading-relaxed text-rose-800"
+        >
           <AlertCircle className="mt-0.5 size-4 shrink-0" />
           <p>{errorMessage}</p>
         </div>

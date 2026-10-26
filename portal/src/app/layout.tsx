@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { ToastProvider } from "@/components/providers/toast-provider";
 import { CartProvider } from "@/components/providers/cart-provider";
+import { PORTAL_URL } from "@/lib/config";
 
 const righteous = localFont({
   src: "./fonts/righteous-latin.woff2",
@@ -20,7 +21,7 @@ const spaceGrotesk = localFont({
   display: "swap",
 });
 
-const portalUrl = process.env.NEXT_PUBLIC_PORTAL_URL || "http://localhost:3000";
+const portalUrl = PORTAL_URL;
 
 export const metadata: Metadata = {
   metadataBase: new URL(portalUrl),
@@ -48,6 +49,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_AR",
     siteName: "Un Viaje Astral",
+    url: portalUrl,
   },
 };
 

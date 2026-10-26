@@ -12,11 +12,33 @@ import {
   registerSchema,
 } from "@/lib/validation";
 import type { ActionState } from "@/lib/types";
+import type { AuthResponse, AuthTokenResponsePassword } from "@supabase/supabase-js";
+import { PORTAL_URL } from "@/lib/config";
 
 function safeNext(value: FormDataEntryValue | null) {
   if (typeof value !== "string") return "/portal";
   if (!value.startsWith("/") || value.startsWith("//")) return "/portal";
   return value;
+}
+
+function resolveOrigin(originHeader: string | null) {
+  if (originHeader) {
+    try {
+      const url = new URL(originHeader);
+      if (url.protocol === "https:" || url.protocol === "http:") {
+        return url.origin;
+      }
+    } catch {
+      // El header no es una URL válida; usamos la URL pública configurada.
+    }
+  }
+
+  return PORTAL_URL;
+}
+
+function logAuthError(context: string, error: unknown) {
+  const message = error instanceof Error ? error.message : "Error desconocido";
+  console.error(`[auth] ${context}: ${message}`);
 }
 
 export async function loginAction(
@@ -32,14 +54,26 @@ export async function loginAction(
     return { error: firstZodError(parsed.error) };
   }
 
-  const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword(parsed.data);
+  let signInResult: AuthTokenResponsePassword;
+
+  try {
+    const supabase = await createClient();
+    signInResult = await supabase.auth.signInWithPassword(parsed.data);
+  } catch (error) {
+    logAuthError("No se pudo iniciar sesión", error);
+    return {
+      error:
+        "No pudimos conectar con el servicio de acceso. Esperá unos segundos y volvé a intentar.",
+    };
+  }
+
+  const { error } = signInResult;
 
   if (error) {
     if (error.message.toLowerCase().includes("email not confirmed")) {
       return {
         error:
-          "Tu email todavía no está confirmado. Revisá tu bandeja de entrada o pedí un nuevo enlace.",
+          "Tu email todavía no está confirmado. Revisá tu bandeja de entrada o escribinos por WhatsApp para recibir un nuevo enlace.",
       };
     }
     return { error: "Email o contraseña incorrectos." };
@@ -67,23 +101,32 @@ export async function registerAction(
   }
 
   const headerStore = await headers();
-  const origin =
-    headerStore.get("origin") ||
-    process.env.NEXT_PUBLIC_PORTAL_URL ||
-    "http://localhost:3000";
+  const origin = resolveOrigin(headerStore.get("origin"));
 
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.signUp({
-    email: parsed.data.email,
-    password: parsed.data.password,
-    options: {
-      data: {
-        full_name: parsed.data.fullName,
-        phone: parsed.data.phone,
+  let signUpResult: AuthResponse;
+
+  try {
+    const supabase = await createClient();
+    signUpResult = await supabase.auth.signUp({
+      email: parsed.data.email,
+      password: parsed.data.password,
+      options: {
+        data: {
+          full_name: parsed.data.fullName,
+          phone: parsed.data.phone,
+        },
+        emailRedirectTo: new URL("/auth/callback?next=/portal", origin).toString(),
       },
-      emailRedirectTo: new URL("/auth/callback?next=/portal", origin).toString(),
-    },
-  });
+    });
+  } catch (error) {
+    logAuthError("No se pudo registrar la cuenta", error);
+    return {
+      error:
+        "No pudimos conectar con el servicio de registro. Esperá unos segundos y volvé a intentar.",
+    };
+  }
+
+  const { data, error } = signUpResult;
 
   if (error) {
     if (error.message.toLowerCase().includes("already registered")) {
@@ -109,8 +152,13 @@ export async function registerAction(
 }
 
 export async function signOutAction() {
-  const supabase = await createClient();
-  await supabase.auth.signOut();
+  try {
+    const supabase = await createClient();
+    await supabase.auth.signOut();
+  } catch (error) {
+    logAuthError("No se pudo cerrar la sesión remota", error);
+  }
+
   redirect("/login");
 }
 

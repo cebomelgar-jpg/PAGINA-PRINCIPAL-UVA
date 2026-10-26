@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://example.supabase.co";
+const supabaseUrl =
+  process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() || "https://example.supabase.co";
 let supabaseHost = "example.supabase.co";
 
 try {
