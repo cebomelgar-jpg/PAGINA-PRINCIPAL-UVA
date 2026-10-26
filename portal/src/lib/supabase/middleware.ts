@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import type { User } from "@supabase/supabase-js";
 import { NextResponse, type NextRequest } from "next/server";
-import { getSupabaseEnv, isSupabaseConfigured } from "@/lib/config";
+import { isSupabaseConfigured, SUPABASE_ANON_KEY, SUPABASE_URL } from "@/lib/config";
 
 const SUPABASE_TIMEOUT_MS = 6_000;
 
@@ -91,9 +91,7 @@ export async function updateSession(
   let response = nextResponse(request);
 
   try {
-    const { url, anonKey } = getSupabaseEnv();
-
-    const supabase = createServerClient(url, anonKey, {
+    const supabase = createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       global: {
         fetch: fetchWithTimeout,
       },

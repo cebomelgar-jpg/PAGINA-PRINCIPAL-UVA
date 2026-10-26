@@ -1,15 +1,17 @@
 export const APP_NAME = "Un Viaje Astral";
 export const PORTAL_NAME = "Portal de pacientes";
 
-const FALLBACK_SUPABASE_URL = "https://aupaythuamaplaleqojn.supabase.co";
-const FALLBACK_SUPABASE_ANON_KEY = "sb_publishable_g0DvwHHF2VgUa5npuo6ZgA_zxIx8YiL";
+export const FALLBACK_SUPABASE_URL =
+  "https://aupaythuamaplaleqojn.supabase.co";
+export const FALLBACK_SUPABASE_ANON_KEY =
+  "sb_publishable_g0DvwHHF2VgUa5npuo6ZgA_zxIx8YiL";
 
 const FALLBACK_PORTAL_URL = "http://localhost:3000";
 const FALLBACK_MAIN_SITE_URL = "https://unviajeastral.com";
 const FALLBACK_WHATSAPP_NUMBER = "5493434151054";
 
 function readValue(value: string | undefined) {
-  return value?.trim() || undefined;
+  return value?.trim() ?? "";
 }
 
 function isHttpUrl(value: string) {
@@ -30,8 +32,14 @@ function normalizePublicUrl(value: string | undefined, fallback: string) {
   return new URL(candidate).origin;
 }
 
+function normalizeSupabaseUrl(value: string | undefined) {
+  const candidate = readValue(value);
+  if (!candidate || !isHttpUrl(candidate)) return FALLBACK_SUPABASE_URL;
+  return new URL(candidate).origin;
+}
+
 function normalizeWhatsAppNumber(value: string | undefined) {
-  const digits = readValue(value)?.replace(/\D/g, "");
+  const digits = readValue(value).replace(/\D/g, "");
   return digits || FALLBACK_WHATSAPP_NUMBER;
 }
 
@@ -55,10 +63,26 @@ export const PORTAL_URL = normalizePublicUrl(
 );
 
 export const BANK_DETAILS = {
-  alias: readValue(process.env.NEXT_PUBLIC_BANK_ALIAS) ?? "",
-  cbu: readValue(process.env.NEXT_PUBLIC_BANK_CBU) ?? "",
-  holder: readValue(process.env.NEXT_PUBLIC_BANK_HOLDER) ?? "",
+  alias: readValue(process.env.NEXT_PUBLIC_BANK_ALIAS),
+  cbu: readValue(process.env.NEXT_PUBLIC_BANK_CBU),
+  holder: readValue(process.env.NEXT_PUBLIC_BANK_HOLDER),
 };
+
+/**
+ * Valores efectivos para crear clientes de Supabase.
+ *
+ * Estas constantes nunca son undefined y nunca lanzan una excepción. Si la
+ * variable no está inyectada en Vercel (o contiene una URL inválida), se usa
+ * el proyecto público por defecto. La publishable/anon key es pública y está
+ * protegida por las políticas RLS de la base.
+ */
+export const SUPABASE_URL = normalizeSupabaseUrl(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+);
+
+export const SUPABASE_ANON_KEY =
+  readValue(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) ||
+  FALLBACK_SUPABASE_ANON_KEY;
 
 export function whatsappUrl(message?: string) {
   const text =
@@ -68,32 +92,9 @@ export function whatsappUrl(message?: string) {
 }
 
 /**
- * Devuelve false si falta alguna credencial o si la URL no es HTTP(S).
- * El middleware usa este chequeo para no intentar inicializar Supabase con
- * valores incompletos o inválidos en Edge Runtime.
+ * El fallback público garantiza que el portal siempre tenga una configuración
+ * válida, incluso si Vercel no inyectó las variables NEXT_PUBLIC_*.
  */
 export function isSupabaseConfigured() {
-  const url = readValue(process.env.NEXT_PUBLIC_SUPABASE_URL) || FALLBACK_SUPABASE_URL;
-  const anonKey = readValue(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) || FALLBACK_SUPABASE_ANON_KEY;
-
-  return Boolean(url && anonKey && isHttpUrl(url));
-}
-
-export function getSupabaseEnv() {
-  const url = readValue(process.env.NEXT_PUBLIC_SUPABASE_URL) || FALLBACK_SUPABASE_URL;
-  const anonKey = readValue(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) || FALLBACK_SUPABASE_ANON_KEY;
-
-  if (!url || !anonKey) {
-    throw new Error(
-      "Faltan NEXT_PUBLIC_SUPABASE_URL o NEXT_PUBLIC_SUPABASE_ANON_KEY. Copiá .env.example a .env.local y completá las credenciales de Supabase.",
-    );
-  }
-
-  if (!isHttpUrl(url)) {
-    throw new Error(
-      "NEXT_PUBLIC_SUPABASE_URL no es una URL HTTP(S) válida. Revisá la configuración de Supabase.",
-    );
-  }
-
-  return { url, anonKey };
+  return Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
 }

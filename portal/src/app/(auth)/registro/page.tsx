@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { UserPlus } from "lucide-react";
 import { RegisterForm } from "@/components/auth/register-form";
-import { isSupabaseConfigured } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: "Crear cuenta",
@@ -21,7 +20,7 @@ export default function RegisterPage() {
       </p>
 
       <div className="mt-6">
-        <RegisterForm configured={isSupabaseConfigured()} />
+        <RegisterForm />
       </div>
     </div>
   );

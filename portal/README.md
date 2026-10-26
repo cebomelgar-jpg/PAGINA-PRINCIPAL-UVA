@@ -58,7 +58,7 @@ El portal queda disponible en [http://localhost:3000](http://localhost:3000).
 
 Las variables se documentan en `.env.example`. Nunca subas `.env.local` al repositorio.
 
-> Las variables `NEXT_PUBLIC_*` se incorporan al bundle durante el build. En Vercel deben estar cargadas en **Production** y **Preview** antes de compilar; si las cambiás, hacé un nuevo deploy. Las claves secretas (`SUPABASE_SERVICE_ROLE_KEY`, `ADMIN_*`) son solo para scripts locales y no deben configurarse en el runtime de Vercel.
+> Las variables `NEXT_PUBLIC_*` se incorporan al bundle durante el build. En Vercel se recomienda cargarlas en **Production** y **Preview** antes de compilar; si las cambiás, hacé un nuevo deploy. El código incluye un fallback público para `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY`, por lo que el portal no se bloquea si Vercel no las inyecta. Las claves secretas (`SUPABASE_SERVICE_ROLE_KEY`, `ADMIN_*`) son solo para scripts locales y no deben configurarse en el runtime de Vercel.
 
 ### Públicas (seguras para el navegador)
 
@@ -66,6 +66,8 @@ Las variables se documentan en `.env.example`. Nunca subas `.env.local` al repos
 | --- | --- |
 | `NEXT_PUBLIC_SUPABASE_URL` | URL del proyecto Supabase |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Anon key de Supabase; protegida por RLS |
+
+> **Fallback público:** `src/lib/config.ts` define la URL y la publishable/anon key del proyecto por defecto. Se usan cuando las variables no están inyectadas o la URL no es HTTP(S). La key es pública por diseño y las tablas siguen protegidas por RLS.
 | `NEXT_PUBLIC_PORTAL_URL` | URL pública del portal; se usa en metadata y redirects |
 | `NEXT_PUBLIC_MAIN_SITE_URL` | URL del sitio público de Un Viaje Astral |
 | `NEXT_PUBLIC_WHATSAPP_NUMBER` | Número de WhatsApp en formato internacional, sin `+` |

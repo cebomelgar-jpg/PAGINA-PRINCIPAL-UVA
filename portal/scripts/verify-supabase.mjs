@@ -11,14 +11,21 @@
 
 import { createClient } from "@supabase/supabase-js";
 
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const FALLBACK_SUPABASE_URL = "https://aupaythuamaplaleqojn.supabase.co";
+const FALLBACK_SUPABASE_ANON_KEY =
+  "sb_publishable_g0DvwHHF2VgUa5npuo6ZgA_zxIx8YiL";
+
+const url =
+  process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() || FALLBACK_SUPABASE_URL;
+const anonKey =
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim() ||
+  FALLBACK_SUPABASE_ANON_KEY;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
 
-if (!url || !anonKey || !serviceRoleKey) {
+if (!serviceRoleKey) {
   console.error(
-    "Faltan NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY o SUPABASE_SERVICE_ROLE_KEY.",
+    "Falta SUPABASE_SERVICE_ROLE_KEY. Es obligatoria para verificar tablas, Storage y Auth Admin.",
   );
   process.exit(1);
 }

@@ -8,30 +8,13 @@ import type { ActionState } from "@/lib/types";
 
 const initialState: ActionState = {};
 
-export function LoginForm({
-  nextPath,
-  configured,
-}: {
-  nextPath?: string;
-  configured: boolean;
-}) {
+export function LoginForm({ nextPath }: { nextPath?: string }) {
   const [state, formAction, pending] = useActionState(loginAction, initialState);
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <form action={formAction} className="space-y-5">
       <input type="hidden" name="next" value={nextPath ?? "/portal"} />
-
-      {!configured ? (
-        <div className="flex gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs leading-relaxed text-amber-900">
-          <AlertCircle className="mt-0.5 size-4 shrink-0" />
-          <p>
-            Falta configurar Supabase. Copiá <code>.env.example</code> a{" "}
-            <code>.env.local</code> y reiniciá el servidor para habilitar el
-            acceso.
-          </p>
-        </div>
-      ) : null}
 
       {state.error ? (
         <div
@@ -55,7 +38,6 @@ export function LoginForm({
           placeholder="tu@email.com"
           className="input"
           required
-          disabled={!configured}
         />
       </div>
 
@@ -80,7 +62,6 @@ export function LoginForm({
             placeholder="Tu contraseña"
             className="input pr-12"
             required
-            disabled={!configured}
           />
           <button
             type="button"
@@ -96,7 +77,7 @@ export function LoginForm({
       <button
         type="submit"
         className="btn-primary w-full"
-        disabled={pending || !configured}
+        disabled={pending}
       >
         {pending ? (
           <>

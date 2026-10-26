@@ -1,13 +1,22 @@
 import type { NextConfig } from "next";
 
-const supabaseUrl =
-  process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() || "https://example.supabase.co";
-let supabaseHost = "example.supabase.co";
+const FALLBACK_SUPABASE_URL = "https://aupaythuamaplaleqojn.supabase.co";
+const FALLBACK_SUPABASE_HOST = "aupaythuamaplaleqojn.supabase.co";
+
+const configuredSupabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+let supabaseHost = FALLBACK_SUPABASE_HOST;
 
 try {
-  supabaseHost = new URL(supabaseUrl).hostname;
+  const supabaseUrl = new URL(
+    configuredSupabaseUrl || FALLBACK_SUPABASE_URL,
+  );
+
+  if (supabaseUrl.protocol === "https:" || supabaseUrl.protocol === "http:") {
+    supabaseHost = supabaseUrl.hostname || FALLBACK_SUPABASE_HOST;
+  }
 } catch {
-  // El build sigue funcionando; el runtime mostrará un error de configuración.
+  // Si la variable no está inyectada o no es una URL válida, el CSP y las
+  // imágenes usan el mismo proyecto público de fallback que el runtime.
 }
 
 const isDev = process.env.NODE_ENV !== "production";

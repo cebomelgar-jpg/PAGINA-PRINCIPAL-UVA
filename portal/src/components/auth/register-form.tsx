@@ -15,7 +15,7 @@ import type { ActionState } from "@/lib/types";
 
 const initialState: ActionState = {};
 
-export function RegisterForm({ configured }: { configured: boolean }) {
+export function RegisterForm() {
   const [state, formAction, pending] = useActionState(
     registerAction,
     initialState,
@@ -46,17 +46,6 @@ export function RegisterForm({ configured }: { configured: boolean }) {
 
   return (
     <form action={formAction} className="space-y-4">
-      {!configured ? (
-        <div className="flex gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs leading-relaxed text-amber-900">
-          <AlertCircle className="mt-0.5 size-4 shrink-0" />
-          <p>
-            Falta configurar Supabase. Copiá <code>.env.example</code> a{" "}
-            <code>.env.local</code> y reiniciá el servidor para habilitar el
-            registro.
-          </p>
-        </div>
-      ) : null}
-
       {state.error ? (
         <div
           role="alert"
@@ -82,7 +71,6 @@ export function RegisterForm({ configured }: { configured: boolean }) {
             required
             minLength={2}
             maxLength={80}
-            disabled={!configured}
           />
         </div>
 
@@ -100,7 +88,6 @@ export function RegisterForm({ configured }: { configured: boolean }) {
             required
             minLength={6}
             maxLength={30}
-            disabled={!configured}
           />
         </div>
 
@@ -116,7 +103,6 @@ export function RegisterForm({ configured }: { configured: boolean }) {
             placeholder="tu@email.com"
             className="input"
             required
-            disabled={!configured}
           />
         </div>
 
@@ -135,8 +121,7 @@ export function RegisterForm({ configured }: { configured: boolean }) {
               required
               minLength={8}
               maxLength={72}
-              disabled={!configured}
-            />
+              />
             <button
               type="button"
               onClick={() => setShowPassword((value) => !value)}
@@ -160,7 +145,6 @@ export function RegisterForm({ configured }: { configured: boolean }) {
             placeholder="Repetí la contraseña"
             className="input"
             required
-            disabled={!configured}
           />
         </div>
       </div>
@@ -172,7 +156,6 @@ export function RegisterForm({ configured }: { configured: boolean }) {
             name="acceptTerms"
             className="mt-0.5 size-4 shrink-0 accent-[#009468]"
             required
-            disabled={!configured}
           />
           <span>
             Acepto las{" "}
@@ -188,7 +171,6 @@ export function RegisterForm({ configured }: { configured: boolean }) {
             name="isAdult"
             className="mt-0.5 size-4 shrink-0 accent-[#009468]"
             required
-            disabled={!configured}
           />
           <span>Confirmo que soy mayor de 18 años.</span>
         </label>
@@ -197,7 +179,7 @@ export function RegisterForm({ configured }: { configured: boolean }) {
       <button
         type="submit"
         className="btn-primary w-full"
-        disabled={pending || !configured}
+        disabled={pending}
       >
         {pending ? (
           <>

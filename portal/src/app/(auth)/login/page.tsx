@@ -3,7 +3,6 @@ import Link from "next/link";
 import { AlertCircle, LockKeyhole, LogOut } from "lucide-react";
 import { LoginForm } from "@/components/auth/login-form";
 import { signOutAction } from "@/lib/actions/auth";
-import { isSupabaseConfigured } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: "Ingresar",
@@ -63,10 +62,7 @@ export default async function LoginPage({
       ) : null}
 
       <div className="mt-6">
-        <LoginForm
-          nextPath={params.next}
-          configured={isSupabaseConfigured()}
-        />
+        <LoginForm nextPath={params.next} />
       </div>
 
       <div className="mt-6 border-t border-ink/10 pt-5 text-center text-xs text-muted">

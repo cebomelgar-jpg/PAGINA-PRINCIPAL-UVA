@@ -59,15 +59,17 @@ async function findUserByEmail(supabase, email) {
 async function main() {
   loadLocalEnv();
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const url =
+    process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() ||
+    "https://aupaythuamaplaleqojn.supabase.co";
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const email = process.env.ADMIN_EMAIL;
   const password = process.env.ADMIN_PASSWORD;
   const fullName = process.env.ADMIN_FULL_NAME || "Administración UVA";
 
-  if (!url || !serviceRoleKey) {
+  if (!serviceRoleKey) {
     throw new Error(
-      "Faltan NEXT_PUBLIC_SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY en .env.local.",
+      "Falta SUPABASE_SERVICE_ROLE_KEY en .env.local. Es obligatoria para crear o promover al administrador.",
     );
   }
   if (!email || !password) {
