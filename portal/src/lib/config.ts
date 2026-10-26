@@ -1,6 +1,9 @@
 export const APP_NAME = "Un Viaje Astral";
 export const PORTAL_NAME = "Portal de pacientes";
 
+const FALLBACK_SUPABASE_URL = "https://aupaythuamaplaleqojn.supabase.co";
+const FALLBACK_SUPABASE_ANON_KEY = "sb_publishable_g0DvwHHF2VgUa5npuo6ZgA_zxIx8YiL";
+
 const FALLBACK_PORTAL_URL = "http://localhost:3000";
 const FALLBACK_MAIN_SITE_URL = "https://unviajeastral.com";
 const FALLBACK_WHATSAPP_NUMBER = "5493434151054";
@@ -70,15 +73,15 @@ export function whatsappUrl(message?: string) {
  * valores incompletos o inválidos en Edge Runtime.
  */
 export function isSupabaseConfigured() {
-  const url = readValue(process.env.NEXT_PUBLIC_SUPABASE_URL);
-  const anonKey = readValue(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+  const url = readValue(process.env.NEXT_PUBLIC_SUPABASE_URL) || FALLBACK_SUPABASE_URL;
+  const anonKey = readValue(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) || FALLBACK_SUPABASE_ANON_KEY;
 
   return Boolean(url && anonKey && isHttpUrl(url));
 }
 
 export function getSupabaseEnv() {
-  const url = readValue(process.env.NEXT_PUBLIC_SUPABASE_URL);
-  const anonKey = readValue(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+  const url = readValue(process.env.NEXT_PUBLIC_SUPABASE_URL) || FALLBACK_SUPABASE_URL;
+  const anonKey = readValue(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) || FALLBACK_SUPABASE_ANON_KEY;
 
   if (!url || !anonKey) {
     throw new Error(
