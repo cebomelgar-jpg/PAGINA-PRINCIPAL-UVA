@@ -82,6 +82,8 @@ Cualquier hosting estático sirve: Netlify, Vercel, Cloudflare Pages, GitHub Pag
 
 Este repositorio publica automáticamente el sitio estático con GitHub Pages mediante `.github/workflows/deploy-pages.yml` cada vez que se suben cambios a `main`. La web queda en `https://cebomelgar-jpg.github.io/PAGINA-PRINCIPAL-UVA/`.
 
+El proyecto `unviajeastraloficial` de Vercel está conectado a este repositorio y publica automáticamente cada cambio en `main` en `https://unviajeastraloficial.vercel.app/`. Usa esta carpeta como raíz y sirve `index.html` y sus recursos sin paso de compilación. `vercel.json` aplica encabezados de seguridad, y `.vercelignore` excluye archivos de desarrollo y el portal de pacientes.
+
 Para otros hostings:
 
 1. Publicá el contenido de esta carpeta como raíz del sitio.
