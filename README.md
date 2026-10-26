@@ -80,6 +80,10 @@ Abrí <http://localhost:4173/>.
 
 Cualquier hosting estático sirve: Netlify, Vercel, Cloudflare Pages, GitHub Pages o un servidor Apache/Nginx.
 
+Este repositorio publica automáticamente el sitio estático con GitHub Pages mediante `.github/workflows/deploy-pages.yml` cada vez que se suben cambios a `main`. La web queda en `https://cebomelgar-jpg.github.io/PAGINA-PRINCIPAL-UVA/`.
+
+Para otros hostings:
+
 1. Publicá el contenido de esta carpeta como raíz del sitio.
 2. Configurá `404.html` como página de error personalizada.
 3. Si el dominio final no es `https://unviajeastral.com/`, actualizá:
